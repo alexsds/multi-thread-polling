@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MultiThreadUrlReader {
-    private static final Logger LOGGER = Logger.getLogger(MultiThreadUrlReader.class.getName());
+public class MultiThreadUrlReaderService {
+    private static final Logger LOGGER = Logger.getLogger(MultiThreadUrlReaderService.class.getName());
 
     private final List<UrlReader> urlReaders = new ArrayList<>();
     private final UrlsFileReader urlsFileReader;
@@ -20,7 +20,7 @@ public class MultiThreadUrlReader {
     @Value("${app.threads.count}")
     private int threadCount;
 
-    public MultiThreadUrlReader(UrlsFileReader urlsFileReader) {
+    public MultiThreadUrlReaderService(UrlsFileReader urlsFileReader) {
         this.urlsFileReader = urlsFileReader;
     }
 

@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class UrlsFileReader {
     private static final String URLS_FILE_NAME = "urls.csv";
 
