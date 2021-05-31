@@ -1,7 +1,6 @@
 package com.alexsds.multithreadpolling.service;
 
 import java.io.File;
-import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,37 +19,44 @@ import org.w3c.dom.Element;
 public class XmlFileWriter {
     public static final String XML_FILE_NAME = "output.xml";
 
-    public File write(Map<String, String> data) throws ParserConfigurationException, TransformerException {
+    private final Document document;
+
+    public XmlFileWriter() throws ParserConfigurationException {
+        document = this.createDocument();
+    }
+
+    private Document createDocument() throws ParserConfigurationException {
         DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
 
         Document document = documentBuilder.newDocument();
-
         Element root = document.createElement("Data");
         document.appendChild(root);
 
-        data.forEach((key, value) -> {
-            Element item = document.createElement("item");
-            root.appendChild(item);
+        return document;
+    }
 
-            Element url = document.createElement("url");
-            url.appendChild(document.createTextNode(key));
-            item.appendChild(url);
+    public void addUrlData(String url, String content) {
+        synchronized (document) {
+            Element itemElement = document.createElement("item");
+            document.getDocumentElement().appendChild(itemElement);
 
-            Element itemData = document.createElement("item_data");
-            itemData.appendChild(document.createTextNode(value));
+            Element urlElement = document.createElement("url");
+            urlElement.appendChild(document.createTextNode(url));
+            itemElement.appendChild(urlElement);
 
-            item.appendChild(itemData);
-        });
+            Element contentElement = document.createElement("item_data");
+            contentElement.appendChild(document.createTextNode(content));
+            itemElement.appendChild(contentElement);
+        }
+    }
 
+    public void saveFile() throws TransformerException {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         DOMSource domSource = new DOMSource(document);
         File file = new File(XML_FILE_NAME);
         StreamResult streamResult = new StreamResult(file);
-
         transformer.transform(domSource, streamResult);
-
-        return file;
     }
 }
